@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Quản Trị Đơn Hàng</title>
+
+    <!-- Firebase Web SDK v8 (CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" role="navigation">
+        <div class="brand">
+          <h1>Hệ thống Quản lý</h1>
+          <p>Restaurant Admin</p>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn active" data-view="orders">Orders</button>
+          <button class="nav-btn" data-view="staff">Staff Management</button>
+          <button class="nav-btn" data-view="tables">Table Management</button>
+        </nav>
+        <div class="sidebar-footer">
+          <small>Realtime Firebase RTDB</small>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="main-header">
+          <div>
+            <h1 id="page-title">Quản lý Đơn hàng</h1>
+            <p id="page-subtitle">Xem, cập nhật trạng thái và thống kê đơn hàng</p>
+          </div>
+          <div id="main-action" class="main-action"></div>
+        </header>
+
+        <section class="main-content" id="main-content">
+          <section class="view view--orders" data-view="orders">
+            <div class="controls">
+              <div class="filters">
+                <label for="filter-status">Lọc trạng thái:</label>
+                <select id="filter-status" aria-label="Lọc đơn hàng theo trạng thái">
+                  <option>All</option>
+                  <option>Pending</option>
+                  <option>Preparing</option>
+                  <option>Served</option>
+                  <option>Paid</option>
+                </select>
+              </div>
+            </div>
+
+            <section class="stats" aria-label="Thống kê nhanh">
+              <div class="stat-card">
+                <h3>Tổng đơn</h3>
+                <p class="stat-value" id="stat-total">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Đang chờ</h3>
+                <p class="stat-value" id="stat-pending">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Đang chuẩn bị</h3>
+                <p class="stat-value" id="stat-preparing">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Đã phục vụ</h3>
+                <p class="stat-value" id="stat-served">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Đã thanh toán</h3>
+                <p class="stat-value" id="stat-paid">0</p>
+              </div>
+            </section>
+
+            <section>
+              <div class="orders" id="orders-root"></div>
+            </section>
+          </section>
+
+          <section class="view view--staff" data-view="staff" hidden>
+            <div class="view-header">
+              <h2>Quản lý nhân viên</h2>
+              <button id="btn-add-staff" class="btn-primary">Thêm nhân viên mới</button>
+            </div>
+            <div id="staff-root" class="table-root"></div>
+          </section>
+
+          <section class="view view--tables" data-view="tables" hidden>
+            <div class="view-header">
+              <h2>Quản lý bàn</h2>
+              <button id="btn-add-table" class="btn-primary">Thêm bàn mới</button>
+            </div>
+            <div id="table-root" class="table-root"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal" role="document">
+        <div class="modal-header">
+          <div>
+            <h3 id="modal-title">Chi tiết</h3>
+            <p id="modal-order-meta" style="color: var(--muted); margin: 4px 0 0; font-size: 0.9rem;"></p>
+          </div>
+          <button class="close-btn" id="modal-close" aria-label="Đóng">×</button>
+        </div>
+        <div class="modal-body" id="modal-content"></div>
+        <div class="modal-footer">
+          <button type="button" id="modal-save" class="btn-primary">Lưu</button>
+          <button type="button" id="modal-close-2">Đóng</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
