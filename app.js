@@ -201,14 +201,17 @@ function renderOrders(orders) {
       if (!id) return;
       const updateRef = firebase.database().ref(`Orders/${id}`);
       updateRef.update({ status: newStatus }).then(() => {
-        // Nếu trạng thái thay đổi thành Paid, hãy kiểm tra xem tất cả các đơn hàng cho bàn này đã được thanh toán chưa, sau đó đặt trạng thái bàn thành Available
-        if (newStatus === "Paid" && order.tableCode) {
+        // Update table status based on all orders for that table
+        if (order.tableCode) {
           const tableCode = order.tableCode;
-          const allOrdersForTable = Object.values(currentOrders).filter(o => o && o.tableCode === tableCode);
+          // Create a temporary copy of current orders with the new status
+          const tempOrders = { ...currentOrders, [id]: { ...order, status: newStatus } };
+          const allOrdersForTable = Object.values(tempOrders).filter(o => o && o.tableCode === tableCode);
           const allPaid = allOrdersForTable.every(o => o.status === "Paid");
-          if (allPaid) {
-            firebase.database().ref(`Tables/${tableCode}`).update({ status: "Available" });
-          }
+          
+          // If all orders are Paid, table is Available; otherwise, table is Occupied
+          const newTableStatus = allPaid ? "Available" : "Occupied";
+          firebase.database().ref(`Tables/${tableCode}`).update({ status: newTableStatus });
         }
       }).catch((err) => {
         console.error("Không thể cập nhật trạng thái:", err);
