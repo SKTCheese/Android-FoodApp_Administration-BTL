@@ -1,4 +1,3 @@
-/* Simple modern dashboard styles */
 :root {
   --bg: #0f172a;
   --card: #111827;
@@ -7,10 +6,10 @@
   --border: rgba(148, 163, 184, 0.2);
   --shadow: 0 10px 25px rgba(0,0,0,0.35);
 
-  --pending: #fbbf24; /* yellow */
-  --preparing: #3b82f6; /* blue */
-  --served: #a855f7; /* purple */
-  --paid: #22c55e; /* green */
+  --pending: #fbbf24; 
+  --preparing: #3b82f6; 
+  --served: #a855f7;
+  --paid: #22c55e; 
   --danger: #ef4444;
 }
 

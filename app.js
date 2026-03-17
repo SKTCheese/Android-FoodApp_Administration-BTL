@@ -1,12 +1,3 @@
-/*
-  App logic for admin dashboard.
-  - Listens to Firebase Realtime Database (Orders node)
-  - Applies status filter
-  - Shows quick stats
-  - Allows status updates
-  - Shows modal with order items
-*/
-
 const ORDER_STATUSES = ["Pending", "Preparing", "Served", "Paid"];
 const STATUS_CLASS = {
   Pending: "badge--pending",
@@ -38,7 +29,7 @@ const ui = {
 };
 
 let currentView = "orders";
-let currentOrders = {}; // map id->order
+let currentOrders = {}; 
 let currentStaff = {};
 let currentTables = {};
 let currentFilter = "All";
@@ -147,7 +138,7 @@ function renderOrders(orders) {
     return order.status === currentFilter;
   });
 
-  // Sort by timestamp descending (most recent first)
+  // Sắp xếp theo thời gian giảm dần (mới nhất trước)
   filtered.sort(([, a], [, b]) => {
     const ta = Number(a.timestamp) || 0;
     const tb = Number(b.timestamp) || 0;
@@ -210,7 +201,7 @@ function renderOrders(orders) {
       if (!id) return;
       const updateRef = firebase.database().ref(`Orders/${id}`);
       updateRef.update({ status: newStatus }).then(() => {
-        // If status changed to Paid, check if all orders for this table are Paid, then set table to Available
+        // Nếu trạng thái thay đổi thành Paid, hãy kiểm tra xem tất cả các đơn hàng cho bàn này đã được thanh toán chưa, sau đó đặt trạng thái bàn thành Available
         if (newStatus === "Paid" && order.tableCode) {
           const tableCode = order.tableCode;
           const allOrdersForTable = Object.values(currentOrders).filter(o => o && o.tableCode === tableCode);
@@ -327,7 +318,7 @@ function renderTables(tables) {
     const row = document.createElement("tr");
 
     const codeTd = document.createElement("td");
-    codeTd.textContent = id; // Table code is now the key
+    codeTd.textContent = id; 
     row.appendChild(codeTd);
 
     const statusTd = document.createElement("td");
@@ -445,14 +436,14 @@ function openTableForm(id, tableData = {}) {
     }
 
     if (id) {
-      // For editing existing table (if implemented)
+      // Dùng để chỉnh sửa bảng hiện có
       const ref = firebase.database().ref(`Tables/${id}`);
       ref.set(payload).then(closeModal).catch((err) => {
         console.error("Lưu bàn thất bại", err);
         alert("Không thể lưu bàn. Vui lòng thử lại.");
       });
     } else {
-      // For adding new table, use table code as key
+      // Để thêm bảng mới, sử dụng tableCode làm khóa.
       const tableCode = payload.code;
       firebase.database().ref(`Tables/${tableCode}`).set({ status: payload.status }).then(closeModal).catch((err) => {
         console.error("Lưu bàn thất bại", err);
@@ -580,7 +571,7 @@ function initFirebaseListeners() {
     renderTables(data);
   });
 
-  // Optional: handle connection errors
+  // xử lý lỗi kết nối
   ordersRef.on("cancel", (error) => {
     console.error("Firebase listener canceled", error);
   });
